@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Imgdup.App/Imgdup.App.csproj" />
+    <Project Path="src/Imgdup.Core/Imgdup.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Imgdup.Core.Tests/Imgdup.Core.Tests.csproj" />
+  </Folder>
+</Solution>

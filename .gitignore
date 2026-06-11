@@ -1,0 +1,20 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+## Build output
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+
+## Rider / VS Code
+.idea/
+.vscode/
+
+## Local cache produced at runtime (LocalAppData\Imgdup\hashes.db)
+*.db
+*.db-shm
+*.db-wal

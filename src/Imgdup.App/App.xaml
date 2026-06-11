@@ -1,0 +1,11 @@
+<Application x:Class="Imgdup.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Imgdup.App"
+             xmlns:conv="clr-namespace:Imgdup.App.Converters">
+    <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <conv:EnumEqualsConverter x:Key="EnumEquals" />
+        <conv:MatchKindToBrushConverter x:Key="MatchKindToBrush" />
+    </Application.Resources>
+</Application>
