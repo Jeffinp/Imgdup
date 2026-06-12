@@ -8,37 +8,57 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance vm:MainViewModel}"
         Title="Imgdup — Verificador de Imagens Duplicadas"
-        Height="720" Width="1100" WindowStartupLocation="CenterScreen">
+        Height="720" Width="1100" WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BrushBackground}"
+        Foreground="{StaticResource BrushText}"
+        FontFamily="{StaticResource FontFamilyDefault}"
+        FontSize="{StaticResource FontSizeBase}">
 
     <DockPanel>
         <!-- ===== Toolbar ===== -->
-        <Border DockPanel.Dock="Top" Padding="8" Background="#F3F3F3" BorderBrush="#DDD" BorderThickness="0,0,0,1">
+        <Border DockPanel.Dock="Top" Padding="10,8"
+                Background="{StaticResource BrushSurface0}"
+                BorderBrush="{StaticResource BrushSurface1}"
+                BorderThickness="0,0,0,1">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Adicionar pastas…" Command="{Binding PickFoldersCommand}" Padding="10,4" Margin="0,0,8,0"/>
-                    <Button Content="Verificar" Command="{Binding ScanCommand}" Padding="10,4" Margin="0,0,4,0" FontWeight="SemiBold"/>
-                    <Button Content="Cancelar" Command="{Binding CancelCommand}" Padding="10,4" Margin="0,0,16,0"/>
+                    <Button Content="Adicionar pastas…" Command="{Binding PickFoldersCommand}"
+                            Style="{StaticResource ButtonDefault}" Margin="0,0,8,0"/>
+                    <Button Content="Verificar" Command="{Binding ScanCommand}"
+                            Style="{StaticResource ButtonPrimary}" Margin="0,0,4,0"/>
+                    <Button Content="Cancelar" Command="{Binding CancelCommand}"
+                            Style="{StaticResource ButtonDefault}" Margin="0,0,16,0"/>
 
-                    <CheckBox Content="Subpastas" IsChecked="{Binding Recursive}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <CheckBox Content="Similares (perceptual)" IsChecked="{Binding DetectNearDuplicates}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="Tolerância:" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                    <Slider Width="100" Minimum="0" Maximum="16" TickFrequency="1" IsSnapToTickEnabled="True"
-                            Value="{Binding NearThreshold}" VerticalAlignment="Center"
+                    <CheckBox Content="Subpastas" IsChecked="{Binding Recursive}"
+                              VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <CheckBox Content="Similares (perceptual)" IsChecked="{Binding DetectNearDuplicates}"
+                              VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Tolerância:" VerticalAlignment="Center" Margin="0,0,4,0"
+                               Foreground="{StaticResource BrushSubtext}"/>
+                    <Slider Width="100" Minimum="0" Maximum="16" TickFrequency="1"
+                            IsSnapToTickEnabled="True" Value="{Binding NearThreshold}"
+                            VerticalAlignment="Center"
                             IsEnabled="{Binding DetectNearDuplicates}"/>
-                    <TextBlock Text="{Binding NearThreshold}" VerticalAlignment="Center" Width="20" Margin="4,0,0,0"/>
+                    <TextBlock Text="{Binding NearThreshold}" VerticalAlignment="Center"
+                               Width="20" Margin="4,0,0,0"
+                               Foreground="{StaticResource BrushText}"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <TextBlock Text="Visualização:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="Visualização:" VerticalAlignment="Center" Margin="0,0,4,0"
+                               Foreground="{StaticResource BrushSubtext}"/>
                     <ComboBox ItemsSource="{Binding ThumbnailSizes}" SelectedItem="{Binding SelectedThumbnailSize}"
                               Width="100" Margin="0,0,16,0"/>
-                    <TextBlock Text="Ordenar:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="Ordenar:" VerticalAlignment="Center" Margin="0,0,4,0"
+                               Foreground="{StaticResource BrushSubtext}"/>
                     <ComboBox ItemsSource="{Binding SortModes}" SelectedItem="{Binding SelectedSort}"
                               Width="150" Margin="0,0,16,0"/>
 
-                    <Button Content="Selecionar extras" Command="{Binding SelectExtrasCommand}" Padding="8,4" Margin="0,0,4,0"/>
-                    <Button Content="Limpar seleção" Command="{Binding ClearSelectionCommand}" Padding="8,4" Margin="0,0,16,0"/>
-                    <Button Padding="8,4" Command="{Binding DeleteSelectedCommand}" Background="#D9534F" Foreground="White">
+                    <Button Content="Selecionar extras" Command="{Binding SelectExtrasCommand}"
+                            Style="{StaticResource ButtonDefault}" Margin="0,0,4,0"/>
+                    <Button Content="Limpar seleção" Command="{Binding ClearSelectionCommand}"
+                            Style="{StaticResource ButtonDefault}" Margin="0,0,16,0"/>
+                    <Button Command="{Binding DeleteSelectedCommand}" Style="{StaticResource ButtonDanger}">
                         <TextBlock>
                             <Run Text="Enviar p/ Lixeira ("/><Run Text="{Binding SelectedCount, Mode=OneWay}"/><Run Text=")"/>
                         </TextBlock>
@@ -52,11 +72,14 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#E8E8E8" CornerRadius="3" Padding="6,2" Margin="0,0,6,4">
+                            <Border Background="{StaticResource BrushSurface1}"
+                                    CornerRadius="4" Padding="6,3" Margin="0,0,6,4">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding}" VerticalAlignment="Center" ToolTip="{Binding}"
-                                               MaxWidth="320" TextTrimming="CharacterEllipsis"/>
-                                    <Button Content="✕" Margin="6,0,0,0" Padding="2,0" BorderThickness="0" Background="Transparent"
+                                               MaxWidth="320" TextTrimming="CharacterEllipsis"
+                                               Foreground="{StaticResource BrushText}"/>
+                                    <Button Content="✕" Margin="6,0,0,0"
+                                            Style="{StaticResource ButtonGhost}"
                                             Command="{Binding DataContext.RemoveFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}"/>
                                 </StackPanel>
@@ -68,14 +91,19 @@
         </Border>
 
         <!-- ===== Status bar ===== -->
-        <Border DockPanel.Dock="Bottom" Padding="8,4" Background="#F3F3F3" BorderBrush="#DDD" BorderThickness="0,1,0,0">
+        <Border DockPanel.Dock="Bottom" Padding="10,5"
+                Background="{StaticResource BrushCrust}"
+                BorderBrush="{StaticResource BrushSurface1}"
+                BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center"/>
-                <ProgressBar Grid.Column="1" Height="14" Minimum="0" Maximum="1" Value="{Binding ProgressFraction}"
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center"
+                           Foreground="{StaticResource BrushSubtext}"/>
+                <ProgressBar Grid.Column="1" Minimum="0" Maximum="1"
+                             Value="{Binding ProgressFraction}"
                              Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}"/>
             </Grid>
         </Border>
@@ -102,9 +130,13 @@
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <Border Margin="4,12,4,4" Padding="8,4" Background="#FAFAFA" BorderThickness="0,0,0,2"
-                                    BorderBrush="{Binding Name.Kind, Converter={StaticResource MatchKindToBrush}}">
-                                <TextBlock Text="{Binding Name.Header}" FontWeight="SemiBold"/>
+                            <Border Margin="4,12,4,4" Padding="8,6"
+                                    Background="{StaticResource BrushSurface0}"
+                                    BorderBrush="{StaticResource BrushMauve}"
+                                    BorderThickness="3,0,0,0">
+                                <TextBlock Text="{Binding Name.Header}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushText}"/>
                             </Border>
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
@@ -113,15 +145,17 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:ImageItemViewModel}">
-                    <Border Padding="6" Margin="4" CornerRadius="4" BorderThickness="1" BorderBrush="#E0E0E0"
+                    <Border Padding="6" Margin="4" CornerRadius="6"
+                            BorderThickness="1" BorderBrush="{StaticResource BrushSurface1}"
                             Loaded="OnItemLoaded">
                         <Border.Style>
                             <Style TargetType="Border">
-                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Background" Value="{StaticResource BrushSurface0}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="Background" Value="#FFF4E5"/>
-                                        <Setter Property="BorderBrush" Value="#E59400"/>
+                                        <Setter Property="Background"      Value="{StaticResource BrushMauveAlpha}"/>
+                                        <Setter Property="BorderBrush"     Value="{StaticResource BrushYellow}"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -130,28 +164,37 @@
                             <Grid Height="{Binding DataContext.ThumbnailPixels, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                 <Image Source="{Binding Thumbnail}" Stretch="Uniform"
                                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2"/>
-                                <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="2" Padding="4,1"
-                                        Background="#2E7D32" CornerRadius="3"
+                                <CheckBox IsChecked="{Binding IsSelected}"
+                                          VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2"/>
+                                <Border VerticalAlignment="Top" HorizontalAlignment="Right"
+                                        Margin="2" Padding="4,1"
+                                        Background="{StaticResource BrushGreen}"
+                                        CornerRadius="3"
                                         Visibility="{Binding IsKeepCandidate, Converter={StaticResource BoolToVisibility}}">
-                                    <TextBlock Text="Manter" Foreground="White" FontSize="10"/>
+                                    <TextBlock Text="Manter"
+                                               Foreground="{StaticResource BrushCrust}"
+                                               FontSize="{StaticResource FontSizeSmall}"
+                                               FontWeight="SemiBold"/>
                                 </Border>
                             </Grid>
-                            <TextBlock Text="{Binding FileName}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}" FontSize="11" Margin="0,4,0,0"/>
-                            <TextBlock Text="{Binding SizeDisplay}" Foreground="#666" FontSize="10"/>
-                            <TextBlock Text="{Binding Dimensions}" Foreground="#666" FontSize="10"/>
-                            <TextBlock Text="{Binding LastModified, StringFormat=g}" Foreground="#999" FontSize="10"/>
+                            <TextBlock Text="{Binding FileName}"
+                                       TextTrimming="CharacterEllipsis" ToolTip="{Binding Path}"
+                                       FontSize="{StaticResource FontSizeBase}"
+                                       Foreground="{StaticResource BrushText}"
+                                       Margin="0,4,0,0"/>
+                            <TextBlock Text="{Binding SizeDisplay}"
+                                       Foreground="{StaticResource BrushSubtext}"
+                                       FontSize="{StaticResource FontSizeSmall}"/>
+                            <TextBlock Text="{Binding Dimensions}"
+                                       Foreground="{StaticResource BrushSubtext}"
+                                       FontSize="{StaticResource FontSizeSmall}"/>
+                            <TextBlock Text="{Binding LastModified, StringFormat=g}"
+                                       Foreground="{StaticResource BrushSubtext}"
+                                       FontSize="{StaticResource FontSizeSmall}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
         </ListBox>
     </DockPanel>
 </Window>
