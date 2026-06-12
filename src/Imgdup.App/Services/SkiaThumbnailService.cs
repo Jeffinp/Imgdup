@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -7,25 +6,39 @@ using SkiaSharp;
 namespace Imgdup.App.Services;
 
 /// <summary>
-/// Produces thumbnails with SkiaSharp (fast hardware-friendly decode/resize) and converts them to
-/// frozen WPF <see cref="BitmapSource"/>s. Decoded results are memoized per (path, size).
+/// Produces thumbnails with SkiaSharp and converts them to frozen WPF BitmapSources.
+/// Uses a bounded LRU cache (400 entries ≈ 100 MB) to cap resident memory.
+/// Tracks native pixel buffer memory with GC.AddMemoryPressure so the collector
+/// runs before the process hits address-space limits.
 /// </summary>
 public sealed class SkiaThumbnailService : IThumbnailService
 {
-    private readonly ConcurrentDictionary<(string Path, int Size), ImageSource> _cache = new();
+    // 400 × 256×256×4 bytes ≈ 100 MB upper bound
+    private const int CacheCapacity = 400;
+    private const int BytesPerPixel = 4;
+
+    private readonly LruCache<(string Path, int Size), BitmapSource> _cache = new(CacheCapacity);
 
     public Task<ImageSource?> GetThumbnailAsync(string path, int maxSize, CancellationToken ct = default)
     {
-        if (_cache.TryGetValue((path, maxSize), out var cached))
+        if (_cache.TryGet((path, maxSize), out var cached))
             return Task.FromResult<ImageSource?>(cached);
 
         return Task.Run<ImageSource?>(() =>
         {
             ct.ThrowIfCancellationRequested();
-            var source = Decode(path, maxSize);
-            if (source is not null)
-                _cache.TryAdd((path, maxSize), source);
-            return source;
+            var bitmap = Decode(path, maxSize);
+            if (bitmap is null)
+                return null;
+
+            long bytes = NativeBytes(bitmap);
+            GC.AddMemoryPressure(bytes);
+
+            var evicted = _cache.Add((path, maxSize), bitmap);
+            if (evicted is not null)
+                GC.RemoveMemoryPressure(NativeBytes(evicted));
+
+            return bitmap;
         }, ct);
     }
 
@@ -55,7 +68,7 @@ public sealed class SkiaThumbnailService : IThumbnailService
                 writable.Unlock();
             }
 
-            writable.Freeze(); // cross-thread safe once frozen
+            writable.Freeze();
             return writable;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
@@ -63,6 +76,9 @@ public sealed class SkiaThumbnailService : IThumbnailService
             return null;
         }
     }
+
+    private static long NativeBytes(BitmapSource b) =>
+        (long)b.PixelWidth * b.PixelHeight * BytesPerPixel;
 
     private static unsafe Span<byte> GetBackBufferSpan(WriteableBitmap bitmap, int length) =>
         new((void*)bitmap.BackBuffer, length);
@@ -73,7 +89,7 @@ public sealed class SkiaThumbnailService : IThumbnailService
             return (box, box);
 
         double scale = Math.Min((double)box / width, (double)box / height);
-        scale = Math.Min(scale, 1.0); // never upscale
+        scale = Math.Min(scale, 1.0);
         return (Math.Max(1, (int)(width * scale)), Math.Max(1, (int)(height * scale)));
     }
 }

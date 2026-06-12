@@ -52,6 +52,13 @@ public sealed partial class ImageItemViewModel(ImageEntry entry, IThumbnailServi
         }
     }
 
+    /// <summary>Releases the in-memory thumbnail so it can be GC'd when the item scrolls out of view.</summary>
+    public void UnloadThumbnail()
+    {
+        _thumbnailRequested = false;
+        Thumbnail = null;
+    }
+
     private static string FormatBytes(long bytes)
     {
         string[] units = ["B", "KB", "MB", "GB"];

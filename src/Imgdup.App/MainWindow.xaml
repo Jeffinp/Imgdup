@@ -147,7 +147,7 @@
                 <DataTemplate DataType="{x:Type vm:ImageItemViewModel}">
                     <Border Padding="6" Margin="4" CornerRadius="6"
                             BorderThickness="1" BorderBrush="{StaticResource BrushSurface1}"
-                            Loaded="OnItemLoaded">
+                            Loaded="OnItemLoaded" Unloaded="OnItemUnloaded">
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="Background" Value="{StaticResource BrushSurface0}"/>

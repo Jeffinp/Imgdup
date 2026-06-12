@@ -21,4 +21,14 @@ public partial class MainWindow : Window
         if (sender is FrameworkElement { DataContext: ImageItemViewModel item })
             await item.EnsureThumbnailAsync(MainViewModel.ThumbnailDecodePixels);
     }
+
+    /// <summary>
+    /// Releases the thumbnail bitmap when an item scrolls out of the virtualized viewport,
+    /// allowing the GC to reclaim pixel-buffer memory between the LRU cache and the ViewModel.
+    /// </summary>
+    private void OnItemUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: ImageItemViewModel item })
+            item.UnloadThumbnail();
+    }
 }
